@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mind Bloom | Gauri's Dashboard</title>
+<style>
+:root {
+  --pink:#f8d9e8;
+  --lav:#e8ddff;
+  --purple:#8d70bd;
+  --dark:#493b5c;
+  --white:#fffaff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,var(--pink),var(--lav));
+  color:var(--dark);
+  min-height:100vh;
+}
+header{
+  text-align:center;
+  padding:24px 15px;
+}
+.logo{
+  width:95px;height:95px;
+  border-radius:25px;
+  object-fit:cover;
+  border:4px solid white;
+  box-shadow:0 5px 18px #9476a955;
+}
+header h1{margin:10px 0 5px;font-size:30px}
+header p{margin:5px}
+nav{
+  display:flex;justify-content:center;gap:8px;
+  flex-wrap:wrap;padding:10px;
+}
+nav button,.btn{
+  border:0;border-radius:20px;
+  padding:11px 16px;background:#fff;
+  color:var(--purple);font-weight:bold;
+  cursor:pointer;
+}
+nav button.active,.btn.primary{
+  background:var(--purple);color:white;
+}
+main{max-width:850px;margin:auto;padding:12px}
+.card{
+  background:#ffffffdf;
+  border-radius:20px;padding:20px;
+  margin:14px 0;
+  box-shadow:0 5px 18px #795c8b18;
+}
+h2{margin-top:0;color:#795ca5}
+input,select{
+  padding:12px;border:1px solid #ddc9ed;
+  border-radius:12px;background:white;
+  color:var(--dark);font-size:15px;
+  max-width:100%;
+}
+input[type="text"]{width:65%}
+button{font-family:inherit}
+.task{
+  display:flex;align-items:center;gap:10px;
+  padding:10px;margin:7px 0;
+  background:#f8efff;border-radius:12px;
+}
+.task span{flex:1;overflow-wrap:anywhere}
+.done{text-decoration:line-through;opacity:.55}
+.small{font-size:13px;opacity:.75}
+.statrow{display:flex;gap:10px;flex-wrap:wrap}
+.stat{
+  flex:1;min-width:110px;text-align:center;
+  background:#f4eaff;border-radius:15px;padding:15px;
+}
+.stat strong{display:block;font-size:25px;color:#805eac}
+.tab{display:none}
+.tab.show{display:block}
+#timer{font-size:48px;font-weight:bold;text-align:center;margin:15px}
+.progress{
+  height:13px;background:#eee2f8;
+  border-radius:20px;overflow:hidden;
+}
+#progressFill{height:100%;width:0;background:#9b7bc7}
+footer{text-align:center;padding:25px;font-size:13px}
+@media(max-width:500px){
+  header h1{font-size:25px}
+  .card{padding:16px}
+  input[type="text"]{width:100%;margin-bottom:8px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <img class="logo" src="IMG-20261113-WA0000.jpg"
+       onerror="this.src='IMG-20261113-WA0001.jpg'"
+       alt="Mind Bloom Logo">
+  <h1>🌷 Mind Bloom</h1>
+  <p>Your little space to learn, grow and bloom.</p>
+  <p><b>Welcome, Gauri! 💗</b></p>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('home',this)">Home</button>
+  <button onclick="showTab('tasks',this)">To-Do</button>
+  <button onclick="showTab('study',this)">Study Planner</button>
+  <button onclick="showTab('focus',this)">Focus Timer</button>
+</nav>
+
+<main>
+<section id="home" class="tab show">
+  <div class="card">
+    <h2>✨ Your Dashboard</h2>
+    <p id="today"></p>
+    <p>Small steps every day lead to big results. 🌸</p>
+    <div class="statrow">
+      <div class="stat"><strong id="taskCount">0</strong>Tasks left</div>
+      <div class="stat"><strong id="doneCount">0</strong>Completed</div>
+      <div class="stat"><strong id="studyCount">0</strong>Study minutes</div>
+    </div>
+  </div>
+  <div class="card">
+    <h2>🌈 Daily Motivation</h2>
+    <p id="quote">Believe in yourself. You are growing every day!</p>
+    <button class="btn" onclick="newQuote()">New Quote ✨</button>
+  </div>
+  <div class="card">
+    <h2>🌱 Daily Progress</h2>
+    <div class="progress"><div id="progressFill"></div></div>
+    <p id="progressText">0% completed</p>
+  </div>
+</section>
+
+<section id="tasks" class="tab">
+  <div class="card">
+    <h2>📝 My To-Do List</h2>
+    <input id="taskInput" type="text" placeholder="Enter a new task">
+    <button class="btn primary" onclick="addTask()">+ Add</button>
+    <div id="taskList"></div>
+  </div>
+</section>
+
+<section id="study" class="tab">
+  <div class="card">
+    <h2>📚 Study Planner</h2>
+    <p>Select your subject and add study time.</p>
+    <select id="subject">
+      <option>Biology</option>
+      <option>Chemistry</option>
+      <option>Physics</option>
+      <option>Computer Science</option>
+      <option>English</option>
+      <option>Yoga</option>
+    </select>
+    <input id="minutes" type="number" min="1" placeholder="Minutes">
+    <button class="btn primary" onclick="addStudy()">Save Session</button>
+    <h3>Study Sessions</h3>
+    <div id="studyList"></div>
+  </div>
+</section>
+
+<section id="focus" class="tab">
+  <div class="card">
+    <h2>⏳ Focus Timer</h2>
+    <p class="small">Take one task at a time. You've got this!</p>
+    <div id="timer">25:00</div>
+    <div style="text-align:center">
+      <button class="btn primary" onclick="startTimer()">Start</button>
+      <button class="btn" onclick="pauseTimer()">Pause</button>
+      <button class="btn" onclick="resetTimer()">Reset</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>Made with 💗 for Gauri | Mind Bloom</footer>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem("mb_tasks") || "[]");
+let sessions = JSON.parse(localStorage.getItem("mb_sessions") || "[]");
+let seconds = 25 * 60;
+let timerInterval = null;
+
+document.getElementById("today").textContent =
+  new Date().toDateString();
+
+function saveData(){
+  localStorage.setItem("mb_tasks",JSON.stringify(tasks));
+  localStorage.setItem("mb_sessions",JSON.stringify(sessions));
+  updateDashboard();
+}
+
+function showTab(id,button){
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("show"));
+  document.getElementById(id).classList.add("show");
+  document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+  button.classList.add("active");
+}
+
+function addTask(){
+  let input=document.getElementById("taskInput");
+  let value=input.value.trim();
+  if(!value)return alert("Please enter a task!");
+  tasks.push({text:value,done:false});
+  input.value="";
+  saveData();
+  renderTasks();
+}
+
+function renderTasks(){
+  let list=document.getElementById("taskList");
+  list.innerHTML="";
+  tasks.forEach((task,index)=>{
+    let row=document.createElement("div");
+    row.className="task";
+    let check=document.createElement("input");
+    check.type="checkbox";
+    check.checked=task.done;
+    check.onchange=()=>{
+      tasks[index].done=check.checked;
+      saveData();renderTasks();
+    };
+    let span=document.createElement("span");
+    span.textContent=task.text;
+    if(task.done)span.className="done";
+    let del=document.createElement("button");
+    del.textContent="✕";
+    del.className="btn";
+    del.onclick=()=>{
+      tasks.splice(index,1);
+      saveData();renderTasks();
+    };
+    row.append(check,span,del);
+    list.appendChild(row);
+  });
+}
+
+function addStudy(){
+  let subject=document.getElementById("subject").value;
+  let mins=Number(document.getElementById("minutes").value);
+  if(!mins||mins<1)return alert("Enter valid study minutes!");
+  sessions.push({subject:subject,minutes:mins});
+  document.getElementById("minutes").value="";
+  saveData();renderStudy();
+}
+
+function renderStudy(){
+  let list=document.getElementById("studyList");
+  list.innerHTML="";
+  sessions.forEach((s,i)=>{
+    let row=document.createElement("div");
+    row.className="task";
+    let span=document.createElement("span");
+    span.textContent=s.subject+" — "+s.minutes+" minutes";
+    let del=document.createElement("button");
+    del.textContent="✕";
+    del.className="btn";
+    del.onclick=()=>{
+      sessions.splice(i,1);
+      saveData();renderStudy();
+    };
+    row.append(span,del);
+    list.appendChild(row);
+  });
+}
+
+function updateDashboard(){
+  let total=tasks.length;
+  let done=tasks.filter(t=>t.done).length;
+  let study=sessions.reduce((sum,s)=>sum+s.minutes,0);
+  document.getElementById("taskCount").textContent=total-done;
+  document.getElementById("doneCount").textContent=done;
+  document.getElementById("studyCount").textContent=study;
+  let percent=total?Math.round(done/total*100):0;
+  document.getElementById("progressFill").style.width=percent+"%";
+  document.getElementById("progressText").textContent=percent+"% completed";
+}
+
+const quotes=[
+  "Believe in yourself. You are growing every day! 🌷",
+  "Progress, not perfection. 💗",
+  "Your future is created by what you do today. ✨",
+  "One chapter at a time, one dream at a time. 📚",
+  "You are capable of amazing things! 🌈"
+];
+function newQuote(){
+  document.getElementById("quote").textContent=
+    quotes[Math.floor(Math.random()*quotes.length)];
+}
+
+function displayTimer(){
+  let m=Math.floor(seconds/60);
+  let s=seconds%60;
+  document.getElementById("timer").textContent=
+    String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+function startTimer(){
+  if(timerInterval)return;
+  timerInterval=setInterval(()=>{
+    if(seconds>0){seconds--;displayTimer();}
+    else{
+      clearInterval(timerInterval);timerInterval=null;
+      alert("Focus session complete! Great work! 🌸");
+    }
+  },1000);
+}
+function pauseTimer(){
+  clearInterval(timerInterval);timerInterval=null;
+}
+function resetTimer(){
+  pauseTimer();seconds=25*60;displayTimer();
+}
+
+renderTasks();
+renderStudy();
+updateDashboard();
+displayTimer();
+</script>
+</body>
+      </html>

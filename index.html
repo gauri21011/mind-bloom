@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="manifest" href="/mind-bloom/manifest.webmanifest">
+<meta name="theme-color" content="#e8b4d8">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mind Bloom | Gauri's Dashboard</title>
@@ -14,6 +16,13 @@
 }
 *{box-sizing:border-box}
 body{
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/mind-bloom/sw.js");
+  });
+}
+</script>
   margin:0;
   font-family:Arial,sans-serif;
   background:linear-gradient(135deg,var(--pink),var(--lav));
